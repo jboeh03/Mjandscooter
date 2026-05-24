@@ -229,9 +229,9 @@ export default async function SocialPage() {
               </button>
             </div>
             <div className="grid gap-4 md:grid-cols-3">
-              <PostCard platform="Instagram" icon="📷" when="5:00 PM Today" handle="marcusacoustic" tone="#3a2030" caption={igCaption} />
-              <PostCard platform="Facebook" icon="f" when="4:30 PM Today" handle="Marcus Acoustic" tone="#102a3a" caption={fbCaption} />
-              <PostCard platform="TikTok" icon="♪" when="Draft" handle="@marcusacoustic" tone="#241a30" caption={ttCaption} draft connectOnly />
+              <PostCard platform="Instagram" icon="📷" when="5:00 PM Today" handle="michaelpaulik" tone="#3a2030" caption={igCaption} />
+              <PostCard platform="Facebook" icon="f" when="4:30 PM Today" handle="Michael Paulik" tone="#102a3a" caption={fbCaption} />
+              <PostCard platform="TikTok" icon="♪" when="Draft" handle="@michaelpaulik" tone="#241a30" caption={ttCaption} draft connectOnly />
             </div>
           </section>
 
@@ -253,7 +253,7 @@ export default async function SocialPage() {
                 className="flex h-28 w-20 shrink-0 flex-col items-center justify-center rounded-lg border border-line text-center"
                 style={{ background: 'linear-gradient(160deg,#16303d,#07111a)' }}
               >
-                <span className="font-serif text-xs text-gold">MARCUS</span>
+                <span className="font-serif text-[0.65rem] leading-tight text-gold">MICHAEL PAULIK</span>
                 <span className="mt-1 text-[0.5rem] uppercase tracking-widest text-mute">Live</span>
                 <span className="mt-2 text-lg">🎸</span>
               </div>

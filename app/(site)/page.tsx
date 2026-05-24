@@ -36,7 +36,7 @@ function Hero() {
           <span className="h-px w-8 bg-gold/60" /> Venue &amp; Event Booking
         </p>
         <h1 className="max-w-2xl font-serif text-5xl font-semibold leading-[1.05] text-cream sm:text-6xl">
-          Book Marcus for Your Venue
+          Book Michael Paulik for Your Venue
         </h1>
         <p className="mt-6 max-w-2xl text-lg leading-relaxed text-mute">
           <span className="text-mist">
@@ -62,7 +62,7 @@ function ArtistCard() {
         />
         <Image
           src="/IMG_1175.jpeg"
-          alt="Marcus playing a live acoustic set"
+          alt="Michael Paulik playing a live acoustic set"
           fill
           priority
           sizes="(max-width: 1024px) 100vw, 40vw"
@@ -76,7 +76,7 @@ function ArtistCard() {
       </div>
 
       <div>
-        <h2 className="font-serif text-3xl text-cream">Marcus</h2>
+        <h2 className="font-serif text-3xl text-cream">Michael Paulik</h2>
         <p className="mt-1 text-sm uppercase tracking-[0.16em] text-mute">
           Live Acoustic · Cincinnati, OH
         </p>
@@ -105,7 +105,7 @@ function ArtistCard() {
       </div>
 
       <blockquote className="border-l-2 border-gold/40 pl-5 font-serif text-lg italic leading-relaxed text-mist">
-        “Marcus is the reason our Tuesday nights went from half-empty to standing
+        “Michael is the reason our Tuesday nights went from half-empty to standing
         room only. He reads the room better than anyone we’ve had — and our
         customers always ask when he’s back.”
       </blockquote>

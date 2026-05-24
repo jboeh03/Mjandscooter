@@ -102,7 +102,7 @@ export default async function LivePage() {
       <div className="flex min-h-screen items-center justify-center px-6 text-center">
         <div>
           <p className="font-serif text-2xl text-cream">No show running right now</p>
-          <p className="mt-2 text-sm text-mute">Check back when Marcus is live.</p>
+          <p className="mt-2 text-sm text-mute">Check back when Michael is live.</p>
           <Link href="/" className="mt-6 inline-block text-sm text-gold">
             ← Back to booking
           </Link>
@@ -133,7 +133,7 @@ export default async function LivePage() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-live opacity-75" />
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-live" />
             </span>
-            Marcus is Live Now
+            Michael Paulik is Live Now
           </p>
           <p className="mt-1 font-serif text-2xl text-gold">@ {gig.venue_name}</p>
         </div>

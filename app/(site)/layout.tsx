@@ -32,7 +32,7 @@ function SiteNav() {
           href="/"
           className="rounded-md bg-gold px-4 py-2 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-ink transition-colors hover:bg-gold-bright"
         >
-          Book Marcus
+          Book Michael
         </Link>
       </nav>
     </header>
@@ -44,7 +44,7 @@ function SiteFooter() {
     <footer className="border-t border-line/70 bg-ink-2">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-6 py-8 text-sm text-faint sm:flex-row">
         <span className="font-serif text-base text-mute">
-          Marcus — Live Acoustic · Cincinnati, OH
+          Michael Paulik — Live Acoustic · Cincinnati, OH
         </span>
         <div className="flex items-center gap-5 text-xs uppercase tracking-[0.16em]">
           <Link href="/live" className="transition-colors hover:text-gold">

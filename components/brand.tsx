@@ -11,8 +11,8 @@ export function Brand({
 }) {
   return (
     <Link href={href} className={`group inline-flex flex-col leading-none ${className}`}>
-      <span className="font-serif text-xl font-semibold tracking-[0.18em] text-cream">
-        MARCUS
+      <span className="font-serif text-xl font-semibold tracking-[0.16em] text-cream">
+        MICHAEL PAULIK
       </span>
       {subtitle ? (
         <span className="mt-1 text-[0.6rem] font-semibold uppercase tracking-[0.28em] text-gold/80">

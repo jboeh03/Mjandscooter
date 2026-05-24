@@ -37,7 +37,7 @@ export async function submitBooking(
 
   const errors: Record<string, string> = {}
   if (!values.name) errors.name = 'Please tell us your name.'
-  if (!values.email) errors.email = 'An email is required so Marcus can reply.'
+  if (!values.email) errors.email = 'An email is required so Michael can reply.'
   else if (!EMAIL_RE.test(values.email))
     errors.email = 'That email address doesn’t look right.'
   if (!values.venueType) errors.venueType = 'Pick a venue type.'
@@ -76,7 +76,7 @@ export async function submitBooking(
 
   return {
     status: 'success',
-    message: `Thanks, ${values.name}! Your booking request is in. Marcus will get back to you within 48 hours.`,
+    message: `Thanks, ${values.name}! Your booking request is in. Michael will get back to you within 48 hours.`,
   }
 }
 

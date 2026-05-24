@@ -15,9 +15,9 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
-  title: 'Marcus — Live Acoustic · Cincinnati',
+  title: 'Michael Paulik — Live Acoustic · Cincinnati',
   description:
-    'Marcus is a live acoustic musician in Cincinnati. Book him for your bar, private event, wedding, or festival — acoustic sets that fill a room.',
+    'Michael Paulik is a live acoustic musician in Cincinnati. Book him for your bar, private event, wedding, or festival — acoustic sets that fill a room.',
 }
 
 export default function RootLayout({

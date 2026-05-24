@@ -113,7 +113,7 @@ export function TipJar({ gigId }: { gigId: string }) {
           </span>
           <span>
             <span className="block text-sm font-semibold text-mist">Venmo</span>
-            <span className="block text-xs text-faint">@marcus-music</span>
+            <span className="block text-xs text-faint">@michaelpaulik</span>
           </span>
         </button>
         <button
@@ -127,7 +127,7 @@ export function TipJar({ gigId }: { gigId: string }) {
           </span>
           <span>
             <span className="block text-sm font-semibold text-mist">CashApp</span>
-            <span className="block text-xs text-faint">$marcusacoustic</span>
+            <span className="block text-xs text-faint">$michaelpaulik</span>
           </span>
         </button>
       </div>
