@@ -95,7 +95,11 @@ export default async function LivePage() {
     getSongs(),
     gig ? getActivity(gig.id) : Promise.resolve([]),
   ])
-  const covers = songs.filter((s) => s.song_type === 'cover').map((s) => s.title)
+  const songOptions = songs.map((s) => ({
+    title: s.title,
+    artist: s.artist,
+    type: s.song_type,
+  }))
 
   if (!gig) {
     return (
@@ -153,7 +157,7 @@ export default async function LivePage() {
           If I know it, I’ll play it. If I don’t — I might just learn it.
         </p>
         <div className="mt-5">
-          <RequestForm gigId={gig.id} covers={covers} />
+          <RequestForm gigId={gig.id} songs={songOptions} />
         </div>
       </section>
 
@@ -193,7 +197,11 @@ export default async function LivePage() {
                 >
                   <span className="font-semibold text-mist">{item.name}</span>{' '}
                   requested{' '}
-                  <span className="font-semibold text-gold">{item.song}</span> ♪
+                  <span className="font-semibold text-gold">{item.song}</span>
+                  {item.artist ? (
+                    <span className="text-faint"> by {item.artist}</span>
+                  ) : null}{' '}
+                  ♪
                 </ActivityRow>
               ) : (
                 <ActivityRow

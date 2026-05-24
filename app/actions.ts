@@ -89,19 +89,19 @@ export async function submitSongRequest(
   formData: FormData
 ): Promise<RequestState> {
   const gigId = field(formData, 'gigId')
-  const typed = field(formData, 'songTitle')
-  const picked = field(formData, 'coverPick')
-  const song = typed || picked
+  const song = field(formData, 'songTitle')
+  const artist = field(formData, 'artist')
   const requester = field(formData, 'requesterName')
 
   if (!song) {
-    return { status: 'error', message: 'Type a song or pick a cover first.' }
+    return { status: 'error', message: 'Start typing a song to request it.' }
   }
 
   const sb = getSupabase()
   const { error } = await sb.from('song_requests').insert({
     gig_id: gigId || null,
     song_title: song,
+    artist: artist || null,
     requester_name: requester || null,
   })
 
@@ -110,7 +110,10 @@ export async function submitSongRequest(
   }
 
   revalidatePath('/live')
-  return { status: 'success', message: `Request for “${song}” sent!` }
+  return {
+    status: 'success',
+    message: `Request for “${song}”${artist ? ` by ${artist}` : ''} sent!`,
+  }
 }
 
 /* ------------------------------- Tip -------------------------------- */
@@ -146,4 +149,91 @@ export async function submitTip(
     status: 'success',
     message: `Thank you for the $${amount} tip! 🎵`,
   }
+}
+
+/* --------------------------- Song lyrics ---------------------------- */
+
+export type SongEditState = {
+  status: 'idle' | 'success' | 'error'
+  message?: string
+}
+
+export async function importLyrics(
+  _prev: SongEditState,
+  formData: FormData
+): Promise<SongEditState> {
+  const songId = field(formData, 'songId')
+  if (!songId) return { status: 'error', message: 'Missing song.' }
+
+  const sb = getSupabase()
+  const { data: song } = await sb
+    .from('songs')
+    .select('title, artist')
+    .eq('id', songId)
+    .maybeSingle()
+
+  if (!song) return { status: 'error', message: 'Song not found.' }
+  if (!song.artist) {
+    return {
+      status: 'error',
+      message: 'Add an artist first — it’s needed to look up the right lyrics.',
+    }
+  }
+
+  try {
+    const res = await fetch(
+      `https://api.lyrics.ovh/v1/${encodeURIComponent(song.artist)}/${encodeURIComponent(song.title)}`,
+      { cache: 'no-store' }
+    )
+    if (!res.ok) {
+      return {
+        status: 'error',
+        message: 'No match from the lyrics service. Paste them manually below.',
+      }
+    }
+    const json = (await res.json()) as { lyrics?: string }
+    const lyrics = (json.lyrics ?? '').replace(/\r\n/g, '\n').trim()
+    if (!lyrics) {
+      return {
+        status: 'error',
+        message: 'No lyrics found for that title/artist. Paste them manually below.',
+      }
+    }
+    const { error } = await sb.from('songs').update({ lyrics }).eq('id', songId)
+    if (error) {
+      return { status: 'error', message: 'Found lyrics but could not save them.' }
+    }
+    revalidatePath(`/dashboard/songs/${songId}`)
+    return { status: 'success', message: 'Lyrics imported.' }
+  } catch {
+    return {
+      status: 'error',
+      message:
+        'Could not reach the lyrics service from this environment. Paste manually, or try on the deployed site.',
+    }
+  }
+}
+
+export async function saveSongText(
+  _prev: SongEditState,
+  formData: FormData
+): Promise<SongEditState> {
+  const songId = field(formData, 'songId')
+  if (!songId) return { status: 'error', message: 'Missing song.' }
+
+  const lyrics = (formData.get('lyrics') ?? '').toString()
+  const chords = (formData.get('chords') ?? '').toString()
+
+  const sb = getSupabase()
+  const { error } = await sb
+    .from('songs')
+    .update({ lyrics: lyrics || null, chords: chords || null })
+    .eq('id', songId)
+
+  if (error) {
+    return { status: 'error', message: 'Could not save. Try again.' }
+  }
+
+  revalidatePath(`/dashboard/songs/${songId}`)
+  return { status: 'success', message: 'Saved.' }
 }

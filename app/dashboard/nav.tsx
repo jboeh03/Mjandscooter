@@ -16,13 +16,13 @@ const SECTIONS: { title: string; items: Item[] }[] = [
     items: [
       { label: 'Dashboard', href: '/dashboard', icon: '◎' },
       { label: 'Gigs', href: '/dashboard', icon: '🎫', badge: 3 },
-      { label: 'Setlists', icon: '♬' },
+      { label: 'Setlists', href: '/dashboard', icon: '♬' },
     ],
   },
   {
     title: 'Content',
     items: [
-      { label: 'Music Library', icon: '♫' },
+      { label: 'Music Library', href: '/dashboard/songs', icon: '♫' },
       { label: 'Social', href: '/dashboard/social', icon: '📣' },
       { label: 'Marketing', href: '/dashboard/social', icon: '✦' },
     ],

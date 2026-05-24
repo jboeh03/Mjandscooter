@@ -126,37 +126,240 @@ export const demoGigs: Gig[] = [
   },
 ]
 
-type SongSeed = [string, string | null, string, string, number, string]
+type OriginalSeed = {
+  title: string
+  key: string
+  bpm: number
+  energy: string
+  lyrics: string
+  chords: string
+}
 
-const songSeeds: SongSeed[] = [
-  ['Old River Road', null, 'original', 'G', 84, 'upbeat'],
-  ['Wagon Wheel', 'Old Crow Medicine Show', 'cover', 'G', 96, 'high'],
-  ['Last Light', null, 'original', 'D', 72, 'mid'],
-  ['Fast Car', 'Tracy Chapman', 'cover', 'A', 104, 'upbeat'],
-  ['Blackbird', 'The Beatles', 'cover', 'C', 66, 'mid'],
-  ['Harvest Moon', 'Neil Young', 'cover', 'E', 80, 'mid'],
-  ['River Bend', null, 'original', 'Bm', 90, 'upbeat'],
-  ['Brown Eyed Girl', 'Van Morrison', 'cover', 'G', 100, 'high'],
-  ["Free Fallin'", 'Tom Petty', 'cover', 'F', 85, 'mid'],
-  ['The Weight', 'The Band', 'cover', 'A', 76, 'mid'],
-  ['Sweet Caroline', 'Neil Diamond', 'cover', 'B', 128, 'high'],
-  ['Hallelujah', 'Leonard Cohen', 'cover', 'C', 60, 'low'],
-  ['Ho Hey', 'The Lumineers', 'cover', 'C', 80, 'upbeat'],
-  ['Take It Easy', 'Eagles', 'cover', 'G', 138, 'high'],
-  ['Hometown Glow', null, 'original', 'A', 88, 'mid'],
+const originalSeeds: OriginalSeed[] = [
+  {
+    title: 'Old River Road',
+    key: 'G',
+    bpm: 84,
+    energy: 'upbeat',
+    lyrics: `[Verse 1]
+Down where the willows lean over the line
+I left my boots and a bottle of wine
+The current keeps time like an old friend would
+Down on the Old River Road
+
+[Chorus]
+And the water knows my name
+Rolls on just the same
+Carry me slow, carry me home
+Down the Old River Road`,
+    chords: `Capo 2 — Key of G
+
+[Verse]
+G                  C
+Down where the willows lean over the line
+G                       D
+I left my boots and a bottle of wine
+Em                 C
+The current keeps time like an old friend would
+G          D         G
+Down on the Old River Road
+
+[Chorus]
+C             G
+And the water knows my name
+C               D
+Rolls on just the same
+Em            C
+Carry me slow, carry me home
+G          D         G
+Down the Old River Road`,
+  },
+  {
+    title: 'Last Light',
+    key: 'D',
+    bpm: 72,
+    energy: 'mid',
+    lyrics: `[Verse]
+We watched the day go gold then gray
+Said all the things we could not say
+Hold on a little longer, stay
+Until the last light fades away
+
+[Chorus]
+Oh, last light
+Burning low on the kitchen wall
+Oh, last light
+Do not go out on us at all`,
+    chords: `Key of D
+
+[Verse]
+D                  A
+We watched the day go gold then gray
+Bm                 G
+Said all the things we could not say
+D                   A
+Hold on a little longer, stay
+G          A        D
+Until the last light fades away
+
+[Chorus]
+Bm        A
+Oh, last light
+G                    D
+Burning low on the kitchen wall
+Bm        A
+Oh, last light
+G               A      D
+Do not go out on us at all`,
+  },
+  {
+    title: 'River Bend',
+    key: 'Bm',
+    bpm: 90,
+    energy: 'upbeat',
+    lyrics: `[Verse]
+Met you down at the river bend
+Where the cold creek starts to mend
+Swore to me you would not pretend
+Meet me at the river bend
+
+[Chorus]
+Bend, river bend
+Take me round the turn again
+Everything I lost back then
+Waits at the river bend`,
+    chords: `Key of Bm
+
+[Verse]
+Bm                 G
+Met you down at the river bend
+D                  A
+Where the cold creek starts to mend
+Bm                  G
+Swore to me you would not pretend
+D        A         Bm
+Meet me at the river bend
+
+[Chorus]
+G         D
+Bend, river bend
+A                   Bm
+Take me round the turn again
+G               D
+Everything I lost back then
+A          Bm
+Waits at the river bend`,
+  },
+  {
+    title: 'Hometown Glow',
+    key: 'A',
+    bpm: 88,
+    energy: 'mid',
+    lyrics: `[Verse]
+Streetlights humming on Pearl and Main
+Same old faces, same sweet refrain
+Everybody here knows everybody's name
+In that hometown glow
+
+[Chorus]
+Hometown glow, hometown glow
+Brightest thing this side of the road
+Wherever I go, wherever I go
+I carry that hometown glow`,
+    chords: `Key of A
+
+[Verse]
+A                   E
+Streetlights humming on Pearl and Main
+F#m                 D
+Same old faces, same sweet refrain
+A                            E
+Everybody here knows everybody's name
+D         E        A
+In that hometown glow
+
+[Chorus]
+D             A
+Hometown glow, hometown glow
+E                       A
+Brightest thing this side of the road
+F#m            D
+Wherever I go, wherever I go
+E                  A
+I carry that hometown glow`,
+  },
 ]
 
-export const demoSongs: Song[] = songSeeds.map(
-  ([title, artist, song_type, song_key, bpm, energy], i) => ({
-    id: `demo-song-${i}`,
+type CoverSeed = [string, string, string, number, string]
+
+const coverSeeds: CoverSeed[] = [
+  ['Wagon Wheel', 'Old Crow Medicine Show', 'G', 96, 'high'],
+  ['Fast Car', 'Tracy Chapman', 'A', 104, 'upbeat'],
+  ['Blackbird', 'The Beatles', 'C', 66, 'mid'],
+  ['Harvest Moon', 'Neil Young', 'E', 80, 'mid'],
+  ['Brown Eyed Girl', 'Van Morrison', 'G', 100, 'high'],
+  ["Free Fallin'", 'Tom Petty', 'F', 85, 'mid'],
+  ['The Weight', 'The Band', 'A', 76, 'mid'],
+  ['Sweet Caroline', 'Neil Diamond', 'B', 128, 'high'],
+  ['Hallelujah', 'Leonard Cohen', 'C', 60, 'low'],
+  ['Ho Hey', 'The Lumineers', 'C', 80, 'upbeat'],
+  ['Take It Easy', 'Eagles', 'G', 138, 'high'],
+  ['Cover Me Up', 'Jason Isbell', 'D', 72, 'mid'],
+  ['The Night We Met', 'Lord Huron', 'A', 88, 'low'],
+  ['Riptide', 'Vance Joy', 'C', 102, 'upbeat'],
+  ['Hey There Delilah', "Plain White T's", 'D', 104, 'mid'],
+  ['Wonderwall', 'Oasis', 'F#m', 87, 'mid'],
+  ['Ring of Fire', 'Johnny Cash', 'G', 108, 'upbeat'],
+  ['Folsom Prison Blues', 'Johnny Cash', 'E', 120, 'upbeat'],
+  ['Mr. Brightside', 'The Killers', 'D', 148, 'high'],
+  ['Use Somebody', 'Kings of Leon', 'C', 136, 'high'],
+  ['Hotel California', 'Eagles', 'Bm', 75, 'mid'],
+  ['Simple Man', 'Lynyrd Skynyrd', 'C', 70, 'mid'],
+  ['The Joker', 'Steve Miller Band', 'F', 90, 'mid'],
+  ['Banana Pancakes', 'Jack Johnson', 'G', 100, 'upbeat'],
+  ['I Will Wait', 'Mumford & Sons', 'C', 132, 'high'],
+  ['Little Talks', 'Of Monsters and Men', 'D', 120, 'high'],
+  ['Stand By Me', 'Ben E. King', 'A', 118, 'mid'],
+  ['Tennessee Whiskey', 'Chris Stapleton', 'A', 48, 'low'],
+  ['Sweet Home Alabama', 'Lynyrd Skynyrd', 'D', 98, 'upbeat'],
+  ['Margaritaville', 'Jimmy Buffett', 'D', 98, 'upbeat'],
+  ['Wish You Were Here', 'Pink Floyd', 'G', 60, 'low'],
+  ["Knockin' on Heaven's Door", 'Bob Dylan', 'G', 72, 'mid'],
+  ['Country Roads', 'John Denver', 'A', 82, 'upbeat'],
+  ['The A Team', 'Ed Sheeran', 'A', 84, 'mid'],
+  ['Chicken Fried', 'Zac Brown Band', 'G', 110, 'upbeat'],
+  ['Drift Away', 'Dobie Gray', 'A', 92, 'mid'],
+  ['Landslide', 'Fleetwood Mac', 'C', 88, 'low'],
+  ['More Than Words', 'Extreme', 'G', 92, 'mid'],
+  ['Black', 'Pearl Jam', 'E', 76, 'mid'],
+  ["Can't You See", 'The Marshall Tucker Band', 'D', 100, 'mid'],
+  ['Patience', "Guns N' Roses", 'G', 60, 'mid'],
+]
+
+export const demoSongs: Song[] = [
+  ...originalSeeds.map((o, i) => ({
+    id: `demo-orig-${i}`,
+    title: o.title,
+    artist: null,
+    song_type: 'original',
+    song_key: o.key,
+    bpm: o.bpm,
+    energy: o.energy,
+    lyrics: o.lyrics,
+    chords: o.chords,
+  })),
+  ...coverSeeds.map(([title, artist, song_key, bpm, energy], i) => ({
+    id: `demo-cover-${i}`,
     title,
     artist,
-    song_type,
+    song_type: 'cover',
     song_key,
     bpm,
     energy,
-  })
-)
+    lyrics: null,
+    chords: null,
+  })),
+]
 
 export const demoActivity: ActivityItem[] = [
   {
@@ -164,6 +367,7 @@ export const demoActivity: ActivityItem[] = [
     id: 'demo-act-1',
     name: 'Jake',
     song: 'Brown Eyed Girl',
+    artist: 'Van Morrison',
     createdAt: minutesAgo(1),
   },
   {
@@ -178,6 +382,7 @@ export const demoActivity: ActivityItem[] = [
     id: 'demo-act-3',
     name: 'Mike',
     song: "Free Fallin'",
+    artist: 'Tom Petty',
     createdAt: minutesAgo(3),
   },
   {

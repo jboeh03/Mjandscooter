@@ -119,6 +119,7 @@ export type Database = {
       }
       song_requests: {
         Row: {
+          artist: string | null
           created_at: string
           gig_id: string | null
           id: string
@@ -127,6 +128,7 @@ export type Database = {
           status: string
         }
         Insert: {
+          artist?: string | null
           created_at?: string
           gig_id?: string | null
           id?: string
@@ -135,6 +137,7 @@ export type Database = {
           status?: string
         }
         Update: {
+          artist?: string | null
           created_at?: string
           gig_id?: string | null
           id?: string
@@ -156,8 +159,10 @@ export type Database = {
         Row: {
           artist: string | null
           bpm: number | null
+          chords: string | null
           energy: string | null
           id: string
+          lyrics: string | null
           song_key: string | null
           song_type: string
           title: string
@@ -165,8 +170,10 @@ export type Database = {
         Insert: {
           artist?: string | null
           bpm?: number | null
+          chords?: string | null
           energy?: string | null
           id?: string
+          lyrics?: string | null
           song_key?: string | null
           song_type?: string
           title: string
@@ -174,8 +181,10 @@ export type Database = {
         Update: {
           artist?: string | null
           bpm?: number | null
+          chords?: string | null
           energy?: string | null
           id?: string
+          lyrics?: string | null
           song_key?: string | null
           song_type?: string
           title?: string

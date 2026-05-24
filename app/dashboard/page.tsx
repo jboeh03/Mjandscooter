@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { getGigs, getSongs } from '@/lib/data'
 import type { Gig, Song } from '@/lib/database.types'
 import { TopBar } from './topbar'
@@ -249,7 +250,17 @@ export default async function DashboardPage() {
                 {setlist.map((s) => (
                   <tr key={s.id} className="border-t border-line/50">
                     <td className="px-5 py-3">
-                      <p className="font-semibold text-mist">{s.title}</p>
+                      <Link
+                        href={`/dashboard/songs/${s.id}`}
+                        className="font-semibold text-mist transition-colors hover:text-gold"
+                      >
+                        {s.title}
+                        {s.lyrics ? (
+                          <span className="ml-2 align-middle text-[0.6rem] text-tip">
+                            ♪ lyrics
+                          </span>
+                        ) : null}
+                      </Link>
                       <p className="text-xs text-faint">
                         {s.artist ?? 'Original'} · Key of {s.song_key}
                       </p>

@@ -8,6 +8,7 @@ export type ActivityItem =
       id: string
       name: string
       song: string
+      artist?: string | null
       createdAt: string
     }
   | {
@@ -54,6 +55,15 @@ export async function getLiveGig(): Promise<Gig | null> {
   return demoGigs.find((g) => g.is_live) ?? demoGigs[0] ?? null
 }
 
+export async function getSong(id: string): Promise<Song | null> {
+  const sb = getSupabase()
+  const data = await query<Song>(() =>
+    sb.from('songs').select('*').eq('id', id).maybeSingle()
+  )
+  if (data) return data
+  return demoSongs.find((s) => s.id === id) ?? null
+}
+
 export async function getSongs(): Promise<Song[]> {
   const sb = getSupabase()
   const data = await query<Song[]>(() =>
@@ -68,7 +78,13 @@ export async function getActivity(
 ): Promise<ActivityItem[]> {
   const sb = getSupabase()
   const reqs = await query<
-    { id: string; requester_name: string | null; song_title: string; created_at: string }[]
+    {
+      id: string
+      requester_name: string | null
+      song_title: string
+      artist: string | null
+      created_at: string
+    }[]
   >(() => {
     let q = sb
       .from('song_requests')
@@ -98,6 +114,7 @@ export async function getActivity(
       id: r.id,
       name: r.requester_name ?? 'Someone',
       song: r.song_title,
+      artist: r.artist,
       createdAt: r.created_at,
     })),
     ...(tips ?? []).map((t) => ({
