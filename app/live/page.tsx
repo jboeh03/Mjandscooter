@@ -115,7 +115,7 @@ export default async function LivePage() {
     <div className="relative mx-auto min-h-screen max-w-md px-5 pb-16">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-64 overflow-hidden">
         <Image
-          src="/marcus-neon.jpg"
+          src="/IMG_1176.jpeg"
           alt=""
           fill
           priority

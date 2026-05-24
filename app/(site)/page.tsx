@@ -61,7 +61,7 @@ function ArtistCard() {
           }}
         />
         <Image
-          src="/marcus.jpg"
+          src="/IMG_1175.jpeg"
           alt="Marcus playing a live acoustic set"
           fill
           priority
