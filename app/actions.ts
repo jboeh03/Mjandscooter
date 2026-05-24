@@ -1,22 +1,7 @@
 'use server'
 
-export type BookingState = {
-  status: 'idle' | 'success' | 'error'
-  message?: string
-  errors?: Record<string, string>
-  values?: Record<string, string>
-}
-
-const EVENT_TYPES = [
-  'Wedding',
-  'Corporate event',
-  'Private party',
-  'Birthday celebration',
-  'Anniversary',
-  'Bar / restaurant / venue',
-  'Festival / public event',
-  'Other',
-]
+import { revalidatePath } from 'next/cache'
+import { getSupabase } from '@/lib/supabase'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -24,51 +9,39 @@ function field(formData: FormData, name: string) {
   return (formData.get(name) ?? '').toString().trim()
 }
 
+/* ----------------------------- Booking ----------------------------- */
+
+export type BookingState = {
+  status: 'idle' | 'success' | 'error'
+  message?: string
+  errors?: Record<string, string>
+  values?: Record<string, string>
+}
+
 export async function submitBooking(
-  _prevState: BookingState,
+  _prev: BookingState,
   formData: FormData
 ): Promise<BookingState> {
   const values = {
     name: field(formData, 'name'),
+    venueName: field(formData, 'venueName'),
     email: field(formData, 'email'),
     phone: field(formData, 'phone'),
-    eventType: field(formData, 'eventType'),
+    venueType: field(formData, 'venueType'),
     eventDate: field(formData, 'eventDate'),
-    eventTime: field(formData, 'eventTime'),
+    startTime: field(formData, 'startTime'),
     duration: field(formData, 'duration'),
-    location: field(formData, 'location'),
-    guests: field(formData, 'guests'),
-    budget: field(formData, 'budget'),
-    referral: field(formData, 'referral'),
-    details: field(formData, 'details'),
+    guestCount: field(formData, 'guestCount'),
+    message: field(formData, 'message'),
   }
 
   const errors: Record<string, string> = {}
-
   if (!values.name) errors.name = 'Please tell us your name.'
-  if (!values.email) {
-    errors.email = 'An email is required so we can reply.'
-  } else if (!EMAIL_RE.test(values.email)) {
+  if (!values.email) errors.email = 'An email is required so Marcus can reply.'
+  else if (!EMAIL_RE.test(values.email))
     errors.email = 'That email address doesn’t look right.'
-  }
-  if (!values.eventType || !EVENT_TYPES.includes(values.eventType)) {
-    errors.eventType = 'Pick the type of event.'
-  }
-  if (!values.eventDate) {
-    errors.eventDate = 'Let us know the date you have in mind.'
-  } else {
-    const date = new Date(values.eventDate + 'T00:00:00')
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    if (Number.isNaN(date.getTime())) {
-      errors.eventDate = 'That date doesn’t look valid.'
-    } else if (date < today) {
-      errors.eventDate = 'Please choose a date in the future.'
-    }
-  }
-  if (!values.location) {
-    errors.location = 'Where is the event? A city or venue is fine.'
-  }
+  if (!values.venueType) errors.venueType = 'Pick a venue type.'
+  if (!values.eventDate) errors.eventDate = 'What date do you have in mind?'
 
   if (Object.keys(errors).length > 0) {
     return {
@@ -79,11 +52,98 @@ export async function submitBooking(
     }
   }
 
-  // Booking request is valid. Wire up email/DB delivery here.
-  console.log('New booking request:', values)
+  const sb = getSupabase()
+  const { error } = await sb.from('bookings').insert({
+    name: values.name,
+    venue_name: values.venueName || null,
+    email: values.email,
+    phone: values.phone || null,
+    venue_type: values.venueType,
+    event_date: values.eventDate || null,
+    start_time: values.startTime || null,
+    duration: values.duration || null,
+    guest_count: values.guestCount ? Number(values.guestCount) : null,
+    message: values.message || null,
+  })
+
+  if (error) {
+    return {
+      status: 'error',
+      message: 'Something went wrong saving your request. Please try again.',
+      values,
+    }
+  }
 
   return {
     status: 'success',
-    message: `Thanks, ${values.name}! Your request for ${values.eventDate} is in. I’ll get back to you within 48 hours.`,
+    message: `Thanks, ${values.name}! Your booking request is in. Marcus will get back to you within 48 hours.`,
+  }
+}
+
+/* --------------------------- Song request --------------------------- */
+
+export type RequestState = { status: 'idle' | 'success' | 'error'; message?: string }
+
+export async function submitSongRequest(
+  _prev: RequestState,
+  formData: FormData
+): Promise<RequestState> {
+  const gigId = field(formData, 'gigId')
+  const typed = field(formData, 'songTitle')
+  const picked = field(formData, 'coverPick')
+  const song = typed || picked
+  const requester = field(formData, 'requesterName')
+
+  if (!song) {
+    return { status: 'error', message: 'Type a song or pick a cover first.' }
+  }
+
+  const sb = getSupabase()
+  const { error } = await sb.from('song_requests').insert({
+    gig_id: gigId || null,
+    song_title: song,
+    requester_name: requester || null,
+  })
+
+  if (error) {
+    return { status: 'error', message: 'Could not send your request. Try again.' }
+  }
+
+  revalidatePath('/live')
+  return { status: 'success', message: `Request for “${song}” sent!` }
+}
+
+/* ------------------------------- Tip -------------------------------- */
+
+export type TipState = { status: 'idle' | 'success' | 'error'; message?: string }
+
+export async function submitTip(
+  _prev: TipState,
+  formData: FormData
+): Promise<TipState> {
+  const gigId = field(formData, 'gigId')
+  const amount = Number(field(formData, 'amount'))
+  const method = field(formData, 'method')
+
+  if (!amount || amount <= 0) {
+    return { status: 'error', message: 'Choose a tip amount.' }
+  }
+
+  const sb = getSupabase()
+  const { error } = await sb.from('tips').insert({
+    gig_id: gigId || null,
+    amount,
+    method: method || null,
+    tipper_name: field(formData, 'tipperName') || null,
+  })
+
+  if (error) {
+    return { status: 'error', message: 'Could not record your tip. Try again.' }
+  }
+
+  revalidatePath('/live')
+  return {
+    status: 'success',
+    message: `Thank you for the $${amount} tip! 🎵`,
   }
 }

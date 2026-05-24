@@ -1,26 +1,75 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Surfaces */
+  --color-ink: #070b10;
+  --color-ink-2: #0a121a;
+  --color-surface: #0d1b25;
+  --color-surface-2: #11242f;
+  --color-surface-3: #16303d;
+  --color-line: #1d3744;
+  --color-line-2: #294b5b;
+
+  /* Brand */
+  --color-gold: #c9a44d;
+  --color-gold-bright: #e6c879;
+  --color-gold-dim: #8a7333;
+  --color-cream: #f3ecda;
+
+  /* Text */
+  --color-mist: #c2cfd8;
+  --color-mute: #889aa6;
+  --color-faint: #5d6f7b;
+
+  /* Semantic */
+  --color-tip: #3ad07f;
+  --color-live: #ef4444;
+  --color-venmo: #3d95ce;
+  --color-cashapp: #00d54b;
+  --color-teal-chip: #11313f;
+  --color-teal-ink: #5fb8d4;
+
+  /* Fonts */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-mist);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-gold) 35%, transparent);
+    color: var(--color-cream);
+  }
+
+  /* Custom scrollbar for the dark theme */
+  * {
+    scrollbar-color: var(--color-line-2) transparent;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+@utility eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+
+@utility label-caps {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-faint);
 }
