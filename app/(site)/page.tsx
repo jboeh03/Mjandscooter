@@ -1,5 +1,10 @@
 import Image from 'next/image'
+import Link from 'next/link'
+import { getLiveGig } from '@/lib/data'
+import type { Gig } from '@/lib/database.types'
 import { BookingForm } from './booking-form'
+
+export const dynamic = 'force-dynamic'
 
 const STATS = [
   { value: '120+', label: 'Gigs booked' },
@@ -15,36 +20,93 @@ const TAGS = [
   'Hyde Park Based',
 ]
 
-function Hero() {
+function directionsUrl(gig: Gig) {
+  const dest = [gig.venue_name, gig.address, gig.neighborhood, gig.city]
+    .filter(Boolean)
+    .join(', ')
+  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dest)}`
+}
+
+function PlayingBanner({ gig }: { gig: Gig }) {
+  const live = gig.is_live || gig.status === 'tonight'
   return (
-    <section className="relative overflow-hidden border-b border-line/70 bg-gradient-to-br from-surface-3 via-[#0c1f2b] to-ink">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.18]"
-        style={{
-          background:
-            'radial-gradient(ellipse 60% 80% at 80% 0%, rgba(201,164,77,0.22), transparent 60%)',
-        }}
-      />
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -right-6 top-1/2 -translate-y-1/2 select-none font-serif text-[18vw] font-bold leading-none text-cream/[0.04]"
-      >
-        BOOKING
-      </span>
-      <div className="relative mx-auto max-w-6xl px-6 py-16 sm:py-20">
-        <p className="eyebrow mb-4 flex items-center gap-3">
-          <span className="h-px w-8 bg-gold/60" /> Venue &amp; Event Booking
-        </p>
-        <h1 className="max-w-2xl font-serif text-5xl font-semibold leading-[1.05] text-cream sm:text-6xl">
-          Book Michael Paulik for Your Venue
-        </h1>
-        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-mute">
-          <span className="text-mist">
-            Bars, private events, weddings, festivals
-          </span>{' '}
-          — acoustic sets that fill a room and make people stay another round.
-        </p>
+    <div className="relative z-20 bg-gold">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-3 text-ink">
+        <div className="min-w-0">
+          <p className="flex items-center gap-2 text-[0.62rem] font-bold uppercase tracking-[0.18em] text-ink/70">
+            {live ? (
+              <>
+                <span className="h-2 w-2 animate-pulse rounded-full bg-live" />
+                Playing Tonight
+              </>
+            ) : (
+              'Next Show'
+            )}
+          </p>
+          <p className="truncate font-serif text-lg leading-tight">
+            {gig.venue_name}
+            {gig.start_time ? ` — ${gig.start_time}` : ''}
+          </p>
+          {gig.cover_note ? (
+            <p className="truncate text-xs text-ink/70">{gig.cover_note}</p>
+          ) : null}
+        </div>
+        <a
+          href={directionsUrl(gig)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex shrink-0 items-center gap-2 rounded-md bg-ink px-4 py-2.5 text-xs font-bold uppercase tracking-[0.12em] text-gold transition-colors hover:bg-ink-2"
+        >
+          <span aria-hidden>➤</span> Directions
+        </a>
       </div>
+    </div>
+  )
+}
+
+function Hero({ gig }: { gig: Gig | null }) {
+  return (
+    <section className="relative isolate flex min-h-[600px] flex-col overflow-hidden border-b border-line/70 sm:min-h-[82vh]">
+      <Image
+        src="/IMG_1176.jpeg"
+        alt="Michael Paulik performing live"
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover object-[50%_26%]"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-ink/75 via-ink/20 to-ink" />
+      <div className="absolute inset-0 bg-gradient-to-tr from-ink/85 via-ink/10 to-transparent" />
+
+      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col justify-end px-6 pb-12 pt-28">
+        <p className="eyebrow mb-4 flex items-center gap-3">
+          <span className="h-px w-8 bg-gold/70" /> Acoustic · Original · Real
+        </p>
+        <h1 className="font-serif text-6xl font-bold uppercase leading-[0.9] tracking-tight text-cream drop-shadow-[0_2px_24px_rgba(0,0,0,0.5)] sm:text-8xl">
+          Michael
+          <br />
+          Paulik
+        </h1>
+        <p className="mt-5 text-sm uppercase tracking-[0.22em] text-mist sm:text-base">
+          Live Acoustic · Cincinnati, OH
+        </p>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <a
+            href="#book"
+            className="inline-flex items-center gap-2 rounded-md bg-gold px-6 py-3 text-sm font-bold uppercase tracking-[0.14em] text-ink transition-colors hover:bg-gold-bright"
+          >
+            <span aria-hidden>📅</span> Book Me
+          </a>
+          <Link
+            href="/live"
+            className="inline-flex items-center gap-2 rounded-md border border-cream/30 bg-ink/30 px-6 py-3 text-sm font-bold uppercase tracking-[0.14em] text-cream backdrop-blur transition-colors hover:bg-ink/50"
+          >
+            <span aria-hidden>♥</span> Tip Me
+          </Link>
+        </div>
+      </div>
+
+      {gig ? <PlayingBanner gig={gig} /> : null}
     </section>
   )
 }
@@ -113,11 +175,29 @@ function ArtistCard() {
   )
 }
 
-export default function BookingPage() {
+export default async function BookingPage() {
+  const gig = await getLiveGig()
   return (
     <>
-      <Hero />
-      <section className="mx-auto max-w-6xl px-6 py-16">
+      <Hero gig={gig} />
+      <section
+        id="book"
+        className="mx-auto max-w-6xl scroll-mt-20 px-6 py-16"
+      >
+        <div className="mb-10 max-w-2xl">
+          <p className="eyebrow mb-3 flex items-center gap-3">
+            <span className="h-px w-8 bg-gold/60" /> Venue &amp; Event Booking
+          </p>
+          <h2 className="font-serif text-4xl font-semibold leading-[1.05] text-cream">
+            Book Michael Paulik for Your Venue
+          </h2>
+          <p className="mt-4 text-lg leading-relaxed text-mute">
+            <span className="text-mist">
+              Bars, private events, weddings, festivals
+            </span>{' '}
+            — acoustic sets that fill a room and make people stay another round.
+          </p>
+        </div>
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           <ArtistCard />
           <div className="rounded-2xl border border-line bg-ink-2/60 p-6 sm:p-8">
