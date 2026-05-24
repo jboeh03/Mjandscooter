@@ -14,7 +14,7 @@ const EVENTS = [
   {
     title: 'Private parties',
     blurb:
-      'Birthdays, anniversaries, backyard bashes — an intimate duo set tailored to your crowd.',
+      'Birthdays, anniversaries, backyard bashes — an intimate solo set tailored to your crowd.',
   },
   {
     title: 'Bars & venues',
@@ -35,20 +35,20 @@ const EVENTS = [
 
 const STATS = [
   { value: '300+', label: 'shows played' },
-  { value: '8 yrs', label: 'performing together' },
+  { value: '8 yrs', label: 'performing' },
   { value: '200+', label: 'songs in rotation' },
 ]
 
 const TESTIMONIALS = [
   {
     quote:
-      'MJ & Scooter read our wedding crowd perfectly. Grandparents and college friends were all on the floor by the second song.',
+      'Mike read our wedding crowd perfectly. Grandparents and college friends were all on the floor by the second song.',
     name: 'Dana & Theo',
     detail: 'Wedding · Asheville, NC',
   },
   {
     quote:
-      'Professional from the first email to load-out. Our guests are still asking who the duo was.',
+      'Professional from the first email to load-out. Our guests are still asking who was playing.',
     name: 'Priya M.',
     detail: 'Corporate gala · Charlotte, NC',
   },
@@ -59,7 +59,7 @@ function Nav() {
     <header className="sticky top-0 z-20 border-b border-white/10 bg-zinc-950/80 backdrop-blur">
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
         <a href="#top" className="text-lg font-bold tracking-tight text-white">
-          MJ <span className="text-amber-400">&amp;</span> Scooter
+          Mike
         </a>
         <div className="hidden items-center gap-8 text-sm font-medium text-zinc-300 sm:flex">
           <a href="#about" className="transition-colors hover:text-white">
@@ -89,15 +89,15 @@ function Hero() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(245,158,11,0.18),_transparent_55%)]" />
       <div className="relative mx-auto max-w-5xl px-6 py-24 sm:py-32">
         <p className="mb-4 text-sm font-semibold uppercase tracking-[0.25em] text-amber-400">
-          Live music duo
+          Live music
         </p>
         <h1 className="max-w-3xl text-4xl font-bold leading-tight tracking-tight text-white sm:text-6xl">
           The right songs, the right room, the whole night.
         </h1>
         <p className="mt-6 max-w-xl text-lg leading-8 text-zinc-300">
-          MJ &amp; Scooter are an acoustic-and-electric duo playing weddings,
-          private parties, and venues. Two voices, real instruments, and a
-          catalog built to keep your people dancing.
+          Mike is a singer and guitarist playing weddings, private parties, and
+          venues. One voice, real instruments, and a catalog built to keep your
+          people dancing.
         </p>
         <div className="mt-10 flex flex-col gap-4 sm:flex-row">
           <a
@@ -132,18 +132,17 @@ function About() {
       <div className="mx-auto grid max-w-5xl gap-12 px-6 lg:grid-cols-2 lg:items-center">
         <div>
           <h2 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
-            Two musicians, no filler
+            One musician, no filler
           </h2>
           <p className="mt-6 text-lg leading-8 text-zinc-600">
-            MJ handles vocals and guitar; Scooter rounds it out on keys, bass,
-            and harmonies. Together they cover everything from Motown and 90s
-            radio to today&apos;s singalongs — arranged for a duo so it never
-            sounds thin.
+            Mike sings and plays guitar, covering everything from Motown and 90s
+            radio to today&apos;s singalongs — arranged for a solo set so it
+            never sounds thin.
           </p>
           <p className="mt-4 text-lg leading-8 text-zinc-600">
-            We bring our own PA, dress for your event, and build a setlist with
-            you ahead of time. You get one point of contact and a band that
-            shows up early.
+            I bring my own PA, dress for your event, and build a setlist with you
+            ahead of time. You get one point of contact and a musician who shows
+            up early.
           </p>
         </div>
         <ul className="space-y-4">
@@ -234,7 +233,7 @@ function BookingSection() {
             Check your date
           </h2>
           <p className="mt-4 text-lg leading-8 text-zinc-300">
-            Tell us about your event and we&apos;ll reply within 48 hours with
+            Tell us about your event and I&apos;ll reply within 48 hours with
             availability and a quote.
           </p>
         </div>
@@ -250,11 +249,8 @@ function Footer() {
   return (
     <footer className="bg-zinc-950 border-t border-white/10">
       <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 px-6 py-10 text-sm text-zinc-400 sm:flex-row">
-        <span>
-          MJ <span className="text-amber-400">&amp;</span> Scooter — live music
-          for every occasion
-        </span>
-        <span>© {new Date().getFullYear()} MJ &amp; Scooter</span>
+        <span>Mike — live music for every occasion</span>
+        <span>© {new Date().getFullYear()} Mike</span>
       </div>
     </footer>
   )

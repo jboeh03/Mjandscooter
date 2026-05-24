@@ -84,6 +84,6 @@ export async function submitBooking(
 
   return {
     status: 'success',
-    message: `Thanks, ${values.name}! Your request for ${values.eventDate} is in. We’ll get back to you within 48 hours.`,
+    message: `Thanks, ${values.name}! Your request for ${values.eventDate} is in. I’ll get back to you within 48 hours.`,
   }
 }

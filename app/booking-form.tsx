@@ -183,7 +183,7 @@ export function BookingForm() {
 
         <div>
           <label htmlFor="duration" className="mb-1.5 block text-sm font-medium text-zinc-800">
-            How long do you need us?
+            How long do you need me?
           </label>
           <select
             id="duration"

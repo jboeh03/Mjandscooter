@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MJ & Scooter | Live Music Duo for Weddings & Events",
+  title: "Mike | Live Music for Weddings & Events",
   description:
-    "MJ & Scooter are a live music duo for weddings, corporate events, private parties, and venues. Check your date and request a quote.",
+    "Mike is a live musician for weddings, corporate events, private parties, and venues. Check your date and request a quote.",
 };
 
 export default function RootLayout({
