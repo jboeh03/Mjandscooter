@@ -1,10 +1,19 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { getLiveGig } from '@/lib/data'
+import { getGigs } from '@/lib/data'
 import type { Gig } from '@/lib/database.types'
 import { BookingForm } from './booking-form'
 
 export const dynamic = 'force-dynamic'
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
+function fmtDate(d: string) {
+  const [y, m, day] = d.split('-').map(Number)
+  const date = new Date(y, m - 1, day)
+  return { day: date.getDate(), mon: MONTHS[date.getMonth()], dow: DOW[date.getDay()] }
+}
 
 const STATS = [
   { value: '120+', label: 'Gigs booked' },
@@ -51,16 +60,85 @@ function PlayingBanner({ gig }: { gig: Gig }) {
             <p className="truncate text-xs text-ink/70">{gig.cover_note}</p>
           ) : null}
         </div>
-        <a
-          href={directionsUrl(gig)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex shrink-0 items-center gap-2 rounded-md bg-ink px-4 py-2.5 text-xs font-bold uppercase tracking-[0.12em] text-gold transition-colors hover:bg-ink-2"
-        >
-          <span aria-hidden>➤</span> Directions
-        </a>
+        <div className="flex shrink-0 items-center gap-2">
+          <a
+            href="#shows"
+            className="rounded-md border border-ink/30 px-3 py-2.5 text-xs font-bold uppercase tracking-[0.12em] text-ink/80 transition-colors hover:bg-ink/10"
+          >
+            Details
+          </a>
+          <a
+            href={directionsUrl(gig)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2.5 text-xs font-bold uppercase tracking-[0.12em] text-gold transition-colors hover:bg-ink-2"
+          >
+            <span aria-hidden>➤</span> Directions
+          </a>
+        </div>
       </div>
     </div>
+  )
+}
+
+function Shows({ gigs }: { gigs: Gig[] }) {
+  if (!gigs.length) return null
+  return (
+    <section id="shows" className="scroll-mt-20 border-b border-line/70 bg-ink-2/40">
+      <div className="mx-auto max-w-6xl px-6 py-16">
+        <p className="eyebrow flex items-center gap-3">
+          <span className="h-px w-8 bg-gold/60" /> Upcoming
+        </p>
+        <h2 className="mt-2 font-serif text-4xl font-semibold text-cream">Shows</h2>
+        <ul className="mt-8 divide-y divide-line/60 overflow-hidden rounded-2xl border border-line bg-surface/30">
+          {gigs.map((g) => {
+            const d = fmtDate(g.gig_date)
+            const tonight = g.is_live || g.status === 'tonight'
+            return (
+              <li
+                key={g.id}
+                className="flex flex-wrap items-center gap-4 px-5 py-5 sm:px-6"
+              >
+                <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-lg border border-line bg-ink/40 leading-none">
+                  <span className="font-serif text-xl text-cream">{d.day}</span>
+                  <span className="text-[0.55rem] uppercase tracking-[0.1em] text-faint">
+                    {d.mon}
+                  </span>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="truncate font-serif text-xl text-cream">
+                      {g.venue_name}
+                    </h3>
+                    {tonight ? (
+                      <span className="rounded bg-gold/20 px-2 py-0.5 text-[0.55rem] font-bold uppercase tracking-[0.12em] text-gold">
+                        Tonight
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="text-sm text-mute">
+                    {d.dow} · {g.start_time}
+                    {g.end_time ? `–${g.end_time}` : ''} · {g.neighborhood},{' '}
+                    {g.city}
+                  </p>
+                  {g.cover_note ? (
+                    <p className="mt-0.5 text-xs text-faint">{g.cover_note}</p>
+                  ) : null}
+                </div>
+                <a
+                  href={directionsUrl(g)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 rounded-md border border-line px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-mute transition-colors hover:border-gold hover:text-gold"
+                >
+                  Directions
+                </a>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
+    </section>
   )
 }
 
@@ -176,10 +254,13 @@ function ArtistCard() {
 }
 
 export default async function BookingPage() {
-  const gig = await getLiveGig()
+  const gigs = await getGigs()
+  const heroGig =
+    gigs.find((g) => g.is_live || g.status === 'tonight') ?? gigs[0] ?? null
   return (
     <>
-      <Hero gig={gig} />
+      <Hero gig={heroGig} />
+      <Shows gigs={gigs.slice(0, 6)} />
       <section
         id="book"
         className="mx-auto max-w-6xl scroll-mt-20 px-6 py-16"
