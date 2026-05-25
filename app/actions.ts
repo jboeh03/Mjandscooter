@@ -2,6 +2,8 @@
 
 import { revalidatePath } from 'next/cache'
 import { getSupabase } from '@/lib/supabase'
+import { getGigs } from '@/lib/data'
+import { findBookingConflict } from '@/lib/availability'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -48,6 +50,24 @@ export async function submitBooking(
       status: 'error',
       message: 'Please fix the highlighted fields and try again.',
       errors,
+      values,
+    }
+  }
+
+  const conflict = findBookingConflict(
+    await getGigs(),
+    values.eventDate,
+    values.startTime,
+    values.duration
+  )
+  if (conflict) {
+    const window = `${conflict.venue_name}${
+      conflict.start_time ? `, ${conflict.start_time}` : ''
+    }${conflict.end_time ? `–${conflict.end_time}` : ''}`
+    return {
+      status: 'error',
+      message: `That time overlaps a scheduled show (${window}). Please choose a start time at least an hour before or after, or pick another date.`,
+      errors: { eventDate: 'Conflicts with a scheduled show.' },
       values,
     }
   }

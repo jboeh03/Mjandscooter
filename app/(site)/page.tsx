@@ -282,7 +282,7 @@ export default async function BookingPage() {
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           <ArtistCard />
           <div className="rounded-2xl border border-line bg-ink-2/60 p-6 sm:p-8">
-            <BookingForm />
+            <BookingForm gigs={gigs} />
           </div>
         </div>
       </section>

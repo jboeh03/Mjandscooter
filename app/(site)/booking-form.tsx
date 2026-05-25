@@ -1,7 +1,12 @@
 'use client'
 
-import { useActionState, useState } from 'react'
+import { useActionState, useMemo, useState } from 'react'
 import { submitBooking, type BookingState } from '@/app/actions'
+import {
+  findBookingConflict,
+  gigsOnDate,
+  type AvailabilityGig,
+} from '@/lib/availability'
 
 const VENUE_TYPES = [
   { value: 'Bar / Pub', label: 'Bar / Pub', icon: '🍺' },
@@ -52,13 +57,22 @@ function SectionHeading({
   )
 }
 
-export function BookingForm() {
+export function BookingForm({ gigs = [] }: { gigs?: AvailabilityGig[] }) {
   const [state, formAction, pending] = useActionState(
     submitBooking,
     initialState
   )
   const [venueType, setVenueType] = useState('Bar / Pub')
   const [guests, setGuests] = useState(75)
+  const [eventDate, setEventDate] = useState(state.values?.eventDate ?? '')
+  const [startTime, setStartTime] = useState(state.values?.startTime ?? '')
+  const [duration, setDuration] = useState(state.values?.duration || '2 hours')
+
+  const conflict = useMemo(
+    () => findBookingConflict(gigs, eventDate, startTime, duration),
+    [gigs, eventDate, startTime, duration]
+  )
+  const sameDay = useMemo(() => gigsOnDate(gigs, eventDate), [gigs, eventDate])
 
   if (state.status === 'success') {
     return (
@@ -179,8 +193,11 @@ export function BookingForm() {
               id="eventDate"
               name="eventDate"
               type="date"
-              defaultValue={v.eventDate}
-              className={`${inputClass} [color-scheme:dark]`}
+              value={eventDate}
+              onChange={(e) => setEventDate(e.target.value)}
+              className={`${inputClass} [color-scheme:dark] ${
+                conflict ? 'border-live focus:border-live focus:ring-live/40' : ''
+              }`}
             />
             <FieldError message={errors.eventDate} />
           </div>
@@ -192,8 +209,11 @@ export function BookingForm() {
               id="startTime"
               name="startTime"
               type="time"
-              defaultValue={v.startTime}
-              className={`${inputClass} [color-scheme:dark]`}
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+              className={`${inputClass} [color-scheme:dark] ${
+                conflict ? 'border-live focus:border-live focus:ring-live/40' : ''
+              }`}
             />
           </div>
           <div>
@@ -203,7 +223,8 @@ export function BookingForm() {
             <select
               id="duration"
               name="duration"
-              defaultValue={v.duration || '2 hours'}
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
               className={inputClass}
             >
               {DURATIONS.map((d) => (
@@ -241,6 +262,34 @@ export function BookingForm() {
           </div>
         </div>
 
+        {conflict ? (
+          <div className="mt-4 flex items-start gap-2.5 rounded-md border border-live/40 bg-live/10 px-4 py-3 text-sm text-live">
+            <span aria-hidden>⚠</span>
+            <span>
+              Michael already has a show that day —{' '}
+              <strong className="font-semibold">{conflict.venue_name}</strong>
+              {conflict.start_time ? `, ${conflict.start_time}` : ''}
+              {conflict.end_time ? `–${conflict.end_time}` : ''}. Please choose a
+              start time at least an hour before or after, or pick another date.
+            </span>
+          </div>
+        ) : sameDay.length > 0 ? (
+          <div className="mt-4 flex items-start gap-2.5 rounded-md border border-gold/30 bg-gold/[0.06] px-4 py-3 text-sm text-mute">
+            <span aria-hidden className="text-gold">
+              ♪
+            </span>
+            <span>
+              Heads up — there’s already a show that day (
+              {sameDay[0].venue_name}
+              {sameDay[0].start_time ? `, ${sameDay[0].start_time}` : ''}
+              {sameDay[0].end_time ? `–${sameDay[0].end_time}` : ''}).{' '}
+              {startTime
+                ? 'Your selected time looks clear.'
+                : 'Add a start time and we’ll make sure it doesn’t clash.'}
+            </span>
+          </div>
+        ) : null}
+
         <div className="mt-6">
           <label htmlFor="message" className={labelClass}>
             Anything else?
@@ -258,10 +307,14 @@ export function BookingForm() {
 
       <button
         type="submit"
-        disabled={pending}
+        disabled={pending || Boolean(conflict)}
         className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-gold px-6 py-3.5 text-sm font-bold uppercase tracking-[0.14em] text-ink transition-colors hover:bg-gold-bright disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {pending ? 'Sending…' : 'Send Booking Request'}
+        {pending
+          ? 'Sending…'
+          : conflict
+            ? 'Pick a conflict-free time'
+            : 'Send Booking Request'}
       </button>
     </form>
   )
